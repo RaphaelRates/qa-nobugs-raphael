@@ -1,0 +1,2052 @@
+{
+	"info": {
+		"_postman_id": "f2d73703-5b4b-4f9f-92f5-dab735d79e52",
+		"name": "Contract Testing",
+		"description": "# About this collection\n\nThis collection helps you set up contract tests to ensure that two separate systems are compatible and can communicate with one another.\n\n## **Using the collection**\n\n**Step 1:** Send the sample requests and view the response and test results.\n\n**Step 2:** Replace the sample request URLs with your desired API endpoints.\n\n**Step 3:** Customize the tests in the \"Tests\" tab if needed. Don't forget to save your changes.\n\n### Resources\n\n[Scripting in Postman](https://learning.postman.com/docs/writing-scripts/intro-to-scripts/)\n\n[Test script examples](https://learning.postman.com/docs/writing-scripts/script-references/test-examples/)\n\n[Postman Sandbox API reference](https://learning.postman.com/docs/sending-requests/grpc/postman-sandbox-api/#writing-assertions)\n\n[Using the Collection Runner](https://learning.postman.com/docs/collections/running-collections/intro-to-collection-runs/)\n\n[  \n](https://postman.postman.co/documentation/24552533-5bead607-0197-4e1d-87d4-3160bc7631c1?entity=&branch=&version=)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "34289617",
+		"_collection_link": "https://kauaraff-9874555.postman.co/workspace/CompassUOL.ServerRest~56010aef-000e-4f6b-a4ec-a0fb4242a017/collection/34289617-f2d73703-5b4b-4f9f-92f5-dab735d79e52?action=share&source=collection_link&creator=34289617"
+	},
+	"item": [
+		{
+			"name": "Login",
+			"item": [
+				{
+					"name": "Erros",
+					"item": [
+						{
+							"name": "Bad Request Test Login",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"if (pm.response.code === 400) {\r",
+											"    pm.test(\"Status 400 - Credenciais inválidas\", function () {\r",
+											"        pm.expect(pm.response.code).to.eql(400);\r",
+											"    });\r",
+											"\r",
+											"    let jsonData = pm.response.json();\r",
+											"\r",
+											"    pm.test(\"Avisando da necessidade do email\", function () {\r",
+											"        pm.expect(jsonData).to.have.property(\"email\");\r",
+											"        pm.expect([\r",
+											"            \"email não pode ficar em branco\",\r",
+											"            \"email é obrigatório\"\r",
+											"        ]).to.include(jsonData.email);\r",
+											"    });\r",
+											"    \r",
+											"    pm.test(\"Avisando da necessidade do password\", function () {\r",
+											"        pm.expect(jsonData).to.have.property(\"password\");\r",
+											"        pm.expect([\r",
+											"            \"password não pode ficar em branco\",\r",
+											"            \"password é obrigatório\"\r",
+											"        ]).to.include(jsonData.password);\r",
+											"    });\r",
+											"}\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/login",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"login"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "NotFound User",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"if (pm.response.code === 401) {\r",
+											"    pm.test(\"Status 401 - Credenciais inválidas\", function () {\r",
+											"        pm.expect(pm.response.code).to.eql(401);\r",
+											"    });\r",
+											"    \r",
+											"    pm.test(\"Mensagem de credenciais inválidas\", function () {\r",
+											"        var jsonData = pm.response.json();\r",
+											"        pm.expect(jsonData).to.have.property(\"message\");\r",
+											"        pm.expect(jsonData.message).to.eql(\"Email e/ou senha inválidos\");\r",
+											"    });\r",
+											"    \r",
+											"    pm.test(\"Resposta não contém token em caso de erro\", function () {\r",
+											"        var jsonData = pm.response.json();\r",
+											"        pm.expect(jsonData).to.not.have.property(\"authorization\");\r",
+											"    });\r",
+											"}"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"email\": \"usuario1756920771105@teste.com\",\r\n  \"password\": \"teste\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{url}}/login",
+									"host": [
+										"{{url}}"
+									],
+									"path": [
+										"login"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "/login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"\r",
+									"pm.test(\"Status 200 - Login realizado com sucesso\", function () {\r",
+									"    pm.expect(pm.response.code).to.eql(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Mensagem de login bem-sucedido\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.have.property(\"message\");\r",
+									"    pm.expect(jsonData.message).to.eql(\"Login realizado com sucesso\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Token de autorização é retornado\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.have.property(\"authorization\");\r",
+									"    pm.expect(jsonData.authorization).to.be.a('string');\r",
+									"    pm.expect(jsonData.authorization).to.not.be.empty;\r",
+									"    pm.expect(jsonData.authorization).to.include(\"Bearer \");\r",
+									"    pm.environment.set(\"auth_token\", jsonData.authorization);\r",
+									"    console.log(\"Token obtido:\", jsonData.authorization.substring(0, 50) + \"...\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response time é aceitável\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(2000);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Token tem formato válido\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    const token = jsonData.authorization;\r",
+									"    pm.expect(token.length).to.be.at.least(100);\r",
+									"    pm.expect(token).to.include(\".\");\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Content-Type é application/json\", function () {\r",
+									"    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Resposta tem estrutura JSON válida\", function () {\r",
+									"    pm.response.to.have.jsonBody();\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Pre-request Script - Executa ANTES da requisição POST\r",
+									"console.log(\"Iniciando teste de login\");\r",
+									"\r",
+									"// Dados de teste - você pode modificar esses valores conforme necessário\r",
+									"const testEmail = \"fulano@qa.com\";\r",
+									"const testPassword = \"teste\";\r",
+									"\r",
+									"// Define as variáveis de ambiente com dados de teste\r",
+									"pm.environment.set(\"test_email\", testEmail);\r",
+									"pm.environment.set(\"test_password\", testPassword);\r",
+									"\r",
+									"console.log(\"Email de teste:\", testEmail);\r",
+									"console.log(\"Senha de teste:\", testPassword);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"email\": \"fulano@qa.com\",\r\n  \"password\": \"teste\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/login",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "/usuarios",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code é 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Resposta tem lista de usuários\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.have.property(\"usuarios\");\r",
+									"    pm.expect(jsonData.usuarios).to.be.an(\"array\");\r",
+									"    pm.expect(jsonData).to.have.property(\"quantidade\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Usuário(s) retornado(s) tem campos esperados\", function () {\r",
+									"    var user = pm.response.json().usuarios[0];\r",
+									"    pm.expect(user).to.have.property(\"nome\");\r",
+									"    pm.expect(user).to.have.property(\"email\");\r",
+									"    pm.expect(user).to.have.property(\"administrador\");\r",
+									"    pm.expect(user).to.have.property(\"password\");\r",
+									"    pm.expect(user).to.have.property(\"_id\");\r",
+									"});\r",
+									"pm.test(\"Response time is less than 1000ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/usuarios",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"usuarios"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/usuarios",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Pre-request Script - Executa ANTES da requisição\r",
+									"console.log(\"Iniciando teste de cadastro de usuário\");\r",
+									"\r",
+									"// Gera dados dinâmicos para evitar email duplicado\r",
+									"const timestamp = new Date().getTime();\r",
+									"const randomEmail = `usuario${timestamp}@teste.com`;\r",
+									"\r",
+									"// Define as variáveis de ambiente com dados dinâmicos\r",
+									"pm.environment.set(\"dynamic_email\", randomEmail);\r",
+									"pm.environment.set(\"dynamic_name\", `Usuário Teste ${timestamp}`);\r",
+									"\r",
+									"console.log(\"Email gerado:\", randomEmail);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {\r",
+									"    pm.test(\"Status 201 - Cadastro realizado com sucesso\", function () {\r",
+									"        pm.expect(pm.response.code).to.eql(201);\r",
+									"    });\r",
+									"    pm.test(\"Resposta contém mensagem de sucesso\", function () {\r",
+									"        var jsonData = pm.response.json();\r",
+									"        pm.expect(jsonData).to.have.property(\"message\");\r",
+									"        pm.expect(jsonData.message).to.eql(\"Cadastro realizado com sucesso\");\r",
+									"    });\r",
+									"    pm.test(\"Resposta contém ID do usuário criado\", function () {\r",
+									"        var jsonData = pm.response.json();\r",
+									"        pm.expect(jsonData).to.have.property(\"_id\");\r",
+									"        pm.expect(jsonData._id).to.be.a('string');\r",
+									"        pm.expect(jsonData._id).to.not.be.empty;\r",
+									"        pm.environment.set(\"user_id\", jsonData._id);\r",
+									"        console.log(\"ID do usuário criado:\", jsonData._id);\r",
+									"    });\r",
+									"    pm.test(\"Response time é aceitável\", function () {\r",
+									"        pm.expect(pm.response.responseTime).to.be.below(2000);\r",
+									"    });\r",
+									"}\r",
+									"if (pm.response.code === 400) {\r",
+									"    pm.test(\"Status 400 - Email já está em uso\", function () {\r",
+									"        pm.expect(pm.response.code).to.eql(400);\r",
+									"    });\r",
+									"    \r",
+									"    pm.test(\"Mensagem de email já cadastrado\", function () {\r",
+									"        var jsonData = pm.response.json();\r",
+									"        pm.expect(jsonData).to.have.property(\"message\");\r",
+									"        pm.expect(jsonData.message).to.eql(\"Este email já está sendo usado\");\r",
+									"    });\r",
+									"    \r",
+									"    pm.test(\"Resposta não contém ID em caso de erro\", function () {\r",
+									"        var jsonData = pm.response.json();\r",
+									"        pm.expect(jsonData).to.not.have.property(\"_id\");\r",
+									"    });\r",
+									"}\r",
+									"pm.test(\"Content-Type é application/json\", function () {\r",
+									"    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Resposta tem estrutura JSON válida\", function () {\r",
+									"    pm.response.to.have.jsonBody();\r",
+									"});\r",
+									"pm.test(\"Response time is less than 500ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nome\": \"{{dynamic_name}}\",\r\n    \"email\": \"{{dynamic_email}}\",\r\n    \"password\": \"teste\",\r\n    \"administrador\": \"true\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/usuarios",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"usuarios"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/usuarios/{id}",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code é 200 ou 400\", function () {\r",
+									"    pm.expect([200, 400]).to.include(pm.response.code);\r",
+									"});\r",
+									"\r",
+									"if (pm.response.code === 200) {\r",
+									"    pm.test(\"Resposta contém campos esperados\", function () {\r",
+									"        var jsonData = pm.response.json();\r",
+									"        pm.expect(jsonData).to.have.property(\"nome\");\r",
+									"        pm.expect(jsonData).to.have.property(\"email\");\r",
+									"        pm.expect(jsonData).to.have.property(\"administrador\");\r",
+									"        pm.expect(jsonData).to.have.property(\"_id\");\r",
+									"    });\r",
+									"}\r",
+									"\r",
+									"if (pm.response.code === 400) {\r",
+									"    pm.test(\"Mensagem de usuário não encontrado\", function () {\r",
+									"        var jsonData = pm.response.json();\r",
+									"        pm.expect(jsonData.message).to.eql(\"Usuário não encontrado\");\r",
+									"    });\r",
+									"}\r",
+									"pm.test(\"Response time is less than 500ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"packages": {},
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/usuarios/{{user_id}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"usuarios",
+								"{{user_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/usuarios/{id}",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Pre-request Script - Executa ANTES da requisição PUT\r",
+									"console.log(\"Iniciando teste de atualização de usuário\");\r",
+									"\r",
+									"// Gera dados dinâmicos para evitar email duplicado\r",
+									"const timestamp = new Date().getTime();\r",
+									"const randomEmail = `usuario${timestamp}@teste.com`;\r",
+									"\r",
+									"// Define as variáveis de ambiente com dados dinâmicos\r",
+									"pm.environment.set(\"dynamic_email\", randomEmail);\r",
+									"pm.environment.set(\"dynamic_name\", `Usuário Atualizado ${timestamp}`);\r",
+									"\r",
+									"// Verifica se temos um ID de usuário para testar\r",
+									"if (!pm.environment.get(\"user_id_to_update\")) {\r",
+									"    console.log(\"Nenhum ID de usuário definido, usando valor padrão\");\r",
+									"    pm.environment.set(\"user_id_to_update\", \"OBIVpg3oLCJjOwU1\");\r",
+									"}\r",
+									"\r",
+									"console.log(\"Tentando atualizar usuário ID:\", pm.environment.get(\"user_id_to_update\"));\r",
+									"console.log(\"Email gerado:\", randomEmail);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Test Script - Executa DEPOIS da requisição PUT\r",
+									"console.log(\"Status code recebido:\", pm.response.code);\r",
+									"console.log(\"Resposta:\", pm.response.text());\r",
+									"\r",
+									"// Teste para status 200 - Alteração bem-sucedida\r",
+									"if (pm.response.code === 200) {\r",
+									"    pm.test(\"Status 200 - Alteração realizada com sucesso\", function () {\r",
+									"        pm.expect(pm.response.code).to.eql(200);\r",
+									"    });\r",
+									"    \r",
+									"    pm.test(\"Mensagem de alteração bem-sucedida\", function () {\r",
+									"        var jsonData = pm.response.json();\r",
+									"        pm.expect(jsonData).to.have.property(\"message\");\r",
+									"        pm.expect(jsonData.message).to.eql(\"Registro alterado com sucesso\");\r",
+									"    });\r",
+									"    \r",
+									"    pm.test(\"Response time é aceitável\", function () {\r",
+									"        pm.expect(pm.response.responseTime).to.be.below(2000);\r",
+									"    });\r",
+									"}\r",
+									"\r",
+									"// Teste para status 201 - Cadastro realizado (quando usuário não existe)\r",
+									"if (pm.response.code === 201) {\r",
+									"    pm.test(\"Status 201 - Cadastro realizado com sucesso\", function () {\r",
+									"        pm.expect(pm.response.code).to.eql(201);\r",
+									"    });\r",
+									"    \r",
+									"    pm.test(\"Mensagem de cadastro bem-sucedido\", function () {\r",
+									"        var jsonData = pm.response.json();\r",
+									"        pm.expect(jsonData).to.have.property(\"message\");\r",
+									"        pm.expect(jsonData.message).to.eql(\"Cadastro realizado com sucesso\");\r",
+									"    });\r",
+									"    \r",
+									"    pm.test(\"ID do novo usuário é retornado\", function () {\r",
+									"        var jsonData = pm.response.json();\r",
+									"        pm.expect(jsonData).to.have.property(\"_id\");\r",
+									"        pm.expect(jsonData._id).to.be.a('string');\r",
+									"        pm.expect(jsonData._id).to.not.be.empty;\r",
+									"        \r",
+									"        // Salva o ID para uso em outros testes\r",
+									"        pm.environment.set(\"novo_usuario_id\", jsonData._id);\r",
+									"        console.log(\"ID do novo usuário criado:\", jsonData._id);\r",
+									"    });\r",
+									"}\r",
+									"\r",
+									"// Teste para status 400 - Email já cadastrado\r",
+									"if (pm.response.code === 400) {\r",
+									"    pm.test(\"Status 400 - Email já está em uso\", function () {\r",
+									"        pm.expect(pm.response.code).to.eql(400);\r",
+									"    });\r",
+									"    \r",
+									"    pm.test(\"Mensagem de email já cadastrado\", function () {\r",
+									"        var jsonData = pm.response.json();\r",
+									"        pm.expect(jsonData).to.have.property(\"message\");\r",
+									"        pm.expect(jsonData.message).to.eql(\"Este email já está sendo usado\");\r",
+									"    });\r",
+									"    \r",
+									"    pm.test(\"Resposta não contém ID em caso de erro\", function () {\r",
+									"        var jsonData = pm.response.json();\r",
+									"        pm.expect(jsonData).to.not.have.property(\"_id\");\r",
+									"    });\r",
+									"}\r",
+									"\r",
+									"// Testes que se aplicam a todos os casos\r",
+									"pm.test(\"Content-Type é application/json\", function () {\r",
+									"    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Resposta tem estrutura JSON válida\", function () {\r",
+									"    pm.response.to.have.jsonBody();\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nome\": \"{{dynamic_name}}\",\r\n    \"email\": \"{{dynamic_email}}\",\r\n    \"password\": \"teste\",\r\n    \"administrador\": \"true\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/usuarios/{{user_id_to_update}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"usuarios",
+								"{{user_id_to_update}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/usuarios/{id}",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Test Script - Executa DEPOIS da requisição DELETE\r",
+									"console.log(\"Status code recebido:\", pm.response.code);\r",
+									"console.log(\"Resposta:\", pm.response.text());\r",
+									"\r",
+									"// Teste para status 200 - Exclusão bem-sucedida ou nenhum registro excluído\r",
+									"if (pm.response.code === 200) {\r",
+									"    pm.test(\"Status 200 - Operação concluída\", function () {\r",
+									"        pm.expect(pm.response.code).to.eql(200);\r",
+									"    });\r",
+									"    \r",
+									"    pm.test(\"Resposta contém mensagem apropriada\", function () {\r",
+									"        var jsonData = pm.response.json();\r",
+									"        pm.expect(jsonData).to.have.property(\"message\");\r",
+									"        \r",
+									"        // Pode retornar duas mensagens diferentes no status 200\r",
+									"        const possibleMessages = [\r",
+									"            \"Registro excluído com sucesso\",\r",
+									"            \"Nenhum registro excluído\",\r",
+									"            \"Não é permitido excluir usuário com carrinho cadastrado\"\r",
+									"        ];\r",
+									"        \r",
+									"        pm.expect(possibleMessages).to.include(jsonData.message);\r",
+									"    });\r",
+									"    \r",
+									"    pm.test(\"Response time é aceitável\", function () {\r",
+									"        pm.expect(pm.response.responseTime).to.be.below(2000);\r",
+									"    });\r",
+									"}\r",
+									"\r",
+									"// Teste para status 400 - Usuário com carrinho cadastrado\r",
+									"if (pm.response.code === 400) {\r",
+									"    pm.test(\"Status 400 - Não é permitido excluir usuário com carrinho\", function () {\r",
+									"        pm.expect(pm.response.code).to.eql(400);\r",
+									"    });\r",
+									"    \r",
+									"    pm.test(\"Mensagem de erro correta\", function () {\r",
+									"        var jsonData = pm.response.json();\r",
+									"        pm.expect(jsonData).to.have.property(\"message\");\r",
+									"        pm.expect(jsonData.message).to.eql(\"Não é permitido excluir usuário com carrinho cadastrado\");\r",
+									"    });\r",
+									"    \r",
+									"    pm.test(\"Resposta contém ID do carrinho\", function () {\r",
+									"        var jsonData = pm.response.json();\r",
+									"        pm.expect(jsonData).to.have.property(\"idCarrinho\");\r",
+									"        pm.expect(jsonData.idCarrinho).to.be.a('string');\r",
+									"        pm.expect(jsonData.idCarrinho).to.not.be.empty;\r",
+									"        \r",
+									"        // Salva o ID do carrinho para possível uso em outros testes\r",
+									"        pm.environment.set(\"carrinho_id_bloqueio\", jsonData.idCarrinho);\r",
+									"        console.log(\"ID do carrinho que impede exclusão:\", jsonData.idCarrinho);\r",
+									"    });\r",
+									"}\r",
+									"\r",
+									"// Testes que se aplicam a todos os casos\r",
+									"pm.test(\"Content-Type é application/json\", function () {\r",
+									"    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Resposta tem estrutura JSON válida\", function () {\r",
+									"    pm.response.to.have.jsonBody();\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Response time is less than 500ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/usuarios/{{user_id_to_delete}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"usuarios",
+								"{{user_id_to_delete}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Produtos",
+			"item": [
+				{
+					"name": "/produtos",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Pre-request Script - Executa ANTES da requisição GET\r",
+									"console.log(\"Iniciando teste de listagem de produtos\");\r",
+									"\r",
+									"// Limpa parâmetros de query anteriores\r",
+									"pm.environment.set(\"query_params\", \"\");\r",
+									"\r",
+									"// Opcional: define alguns parâmetros de query para teste\r",
+									"const params = {\r",
+									"    nome: \"Logitech\",\r",
+									"    preco: 100,\r",
+									"    quantidade: 10\r",
+									"};\r",
+									"\r",
+									"// Constrói a string de query\r",
+									"const queryString = Object.entries(params)\r",
+									"    .filter(([key, value]) => value !== undefined && value !== \"\")\r",
+									"    .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)\r",
+									"    .join('&');\r",
+									"\r",
+									"pm.environment.set(\"query_params\", queryString);\r",
+									"console.log(\"Parâmetros de query:\", queryString);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"\r",
+									"pm.test(\"Status 200 - Lista de produtos retornada\", function () {\r",
+									"    pm.expect(pm.response.code).to.eql(200);\r",
+									"});\r",
+									"pm.test(\"Content-Type é application/json\", function () {\r",
+									"    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');\r",
+									"});\r",
+									"pm.test(\"Estrutura JSON válida\", function () {\r",
+									"    pm.response.to.have.jsonBody();\r",
+									"});\r",
+									"pm.test(\"Response time is less than 1000ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+									"});\r",
+									"pm.test(\"Resposta contém estrutura correta\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.have.property(\"quantidade\");\r",
+									"    pm.expect(jsonData.quantidade).to.be.a('number');\r",
+									"    pm.expect(jsonData.quantidade).to.be.at.least(0);\r",
+									"    pm.expect(jsonData).to.have.property(\"produtos\");\r",
+									"    pm.expect(jsonData.produtos).to.be.an('array');\r",
+									"});\r",
+									"pm.test(\"Cada produto tem a estrutura correta\", function () {\r",
+									"    if (jsonData.quantidade > 0) {\r",
+									"        jsonData.produtos.forEach((produto, index) => {\r",
+									"            pm.expect(produto).to.have.property(\"nome\");\r",
+									"            pm.expect(produto).to.have.property(\"preco\");\r",
+									"            pm.expect(produto).to.have.property(\"descricao\");\r",
+									"            pm.expect(produto).to.have.property(\"quantidade\");\r",
+									"            pm.expect(produto).to.have.property(\"_id\");\r",
+									"            pm.expect(produto.nome).to.be.a('string');\r",
+									"            pm.expect(produto.preco).to.be.a('number');\r",
+									"            pm.expect(produto.descricao).to.be.a('string');\r",
+									"            pm.expect(produto.quantidade).to.be.a('number');\r",
+									"            pm.expect(produto._id).to.be.a('string');\r",
+									"            pm.expect(produto.nome).to.not.be.empty;\r",
+									"            pm.expect(produto.preco).to.be.at.least(0);\r",
+									"            pm.expect(produto.quantidade).to.be.at.least(0);\r",
+									"            pm.expect(produto._id).to.not.be.empty;\r",
+									"        });\r",
+									"    }\r",
+									"});\r",
+									"pm.test(\"Quantidade corresponde ao número de produtos\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.quantidade).to.eql(jsonData.produtos.length);\r",
+									"});\r",
+									"pm.test(\"Response time é aceitável\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(3000);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Parâmetros de query são suportados\", function () {\r",
+									"    pm.expect(pm.response.code).to.eql(200);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/produtos",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"produtos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/produtos",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Test Script - Executa DEPOIS da requisição POST\r",
+									"console.log(\"Status code recebido:\", pm.response.code);\r",
+									"console.log(\"Resposta:\", pm.response.text());\r",
+									"\r",
+									"// Teste para status 201 - Cadastro bem-sucedido\r",
+									"if (pm.response.code === 201) {\r",
+									"    pm.test(\"Status 201 - Cadastro realizado com sucesso\", function () {\r",
+									"        pm.expect(pm.response.code).to.eql(201);\r",
+									"    });\r",
+									"    \r",
+									"    pm.test(\"Mensagem de cadastro bem-sucedido\", function () {\r",
+									"        var jsonData = pm.response.json();\r",
+									"        pm.expect(jsonData).to.have.property(\"message\");\r",
+									"        pm.expect(jsonData.message).to.eql(\"Cadastro realizado com sucesso\");\r",
+									"    });\r",
+									"    \r",
+									"    pm.test(\"ID do produto é retornado\", function () {\r",
+									"        var jsonData = pm.response.json();\r",
+									"        pm.expect(jsonData).to.have.property(\"_id\");\r",
+									"        pm.expect(jsonData._id).to.be.a('string');\r",
+									"        pm.expect(jsonData._id).to.not.be.empty;\r",
+									"        \r",
+									"        // Salva o ID para uso em outros testes\r",
+									"        pm.environment.set(\"produto_id\", jsonData._id);\r",
+									"        console.log(\"ID do produto criado:\", jsonData._id);\r",
+									"    });\r",
+									"    \r",
+									"    pm.test(\"Response time é aceitável\", function () {\r",
+									"        pm.expect(pm.response.responseTime).to.be.below(2000);\r",
+									"    });\r",
+									"}\r",
+									"\r",
+									"// Teste para status 400 - Nome já existe\r",
+									"if (pm.response.code === 400) {\r",
+									"    pm.test(\"Status 400 - Nome duplicado\", function () {\r",
+									"        pm.expect(pm.response.code).to.eql(400);\r",
+									"    });\r",
+									"    \r",
+									"    pm.test(\"Mensagem de nome já existente\", function () {\r",
+									"        var jsonData = pm.response.json();\r",
+									"        pm.expect(jsonData).to.have.property(\"message\");\r",
+									"        pm.expect(jsonData.message).to.eql(\"Já existe produto com esse nome\");\r",
+									"    });\r",
+									"    \r",
+									"    pm.test(\"Resposta não contém ID em caso de erro\", function () {\r",
+									"        var jsonData = pm.response.json();\r",
+									"        pm.expect(jsonData).to.not.have.property(\"_id\");\r",
+									"    });\r",
+									"}\r",
+									"\r",
+									"// Teste para status 401 - Token inválido\r",
+									"if (pm.response.code === 401) {\r",
+									"    pm.test(\"Status 401 - Token inválido\", function () {\r",
+									"        pm.expect(pm.response.code).to.eql(401);\r",
+									"    });\r",
+									"    \r",
+									"    pm.test(\"Mensagem de token inválido\", function () {\r",
+									"        var jsonData = pm.response.json();\r",
+									"        pm.expect(jsonData).to.have.property(\"message\");\r",
+									"        pm.expect(jsonData.message).to.eql(\"Token de acesso ausente, inválido, expirado ou usuário do token não existe mais\");\r",
+									"    });\r",
+									"}\r",
+									"\r",
+									"// Teste para status 403 - Acesso não autorizado\r",
+									"if (pm.response.code === 403) {\r",
+									"    pm.test(\"Status 403 - Acesso negado\", function () {\r",
+									"        pm.expect(pm.response.code).to.eql(403);\r",
+									"    });\r",
+									"    \r",
+									"    pm.test(\"Mensagem de rota exclusiva para administradores\", function () {\r",
+									"        var jsonData = pm.response.json();\r",
+									"        pm.expect(jsonData).to.have.property(\"message\");\r",
+									"        pm.expect(jsonData.message).to.eql(\"Rota exclusiva para administradores\");\r",
+									"    });\r",
+									"}\r",
+									"\r",
+									"// Testes que se aplicam a todos os casos\r",
+									"pm.test(\"Content-Type é application/json\", function () {\r",
+									"    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Resposta tem estrutura JSON válida\", function () {\r",
+									"    pm.response.to.have.jsonBody();\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Pre-request Script - Executa ANTES da requisição POST\r",
+									"console.log(\"Iniciando teste de cadastro de produto\");\r",
+									"\r",
+									"// Gera dados dinâmicos para evitar nome duplicado\r",
+									"const timestamp = new Date().getTime();\r",
+									"const randomName = `Produto Teste ${timestamp}`;\r",
+									"\r",
+									"// Define as variáveis de ambiente com dados dinâmicos\r",
+									"pm.environment.set(\"dynamic_name\", randomName);\r",
+									"pm.environment.set(\"dynamic_descricao\", `Descrição do produto ${timestamp}`);\r",
+									"\r",
+									"// Verifica se temos um token de administrador\r",
+									"if (!pm.environment.get(\"admin_token\")) {\r",
+									"    console.warn(\"Token de administrador não encontrado. O teste pode falhar com status 401 ou 403\");\r",
+									"}\r",
+									"\r",
+									"console.log(\"Nome do produto gerado:\", randomName);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{Authorization}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nome\": \"{{dynamic_name}}\",\r\n    \"preco\": 199,\r\n    \"descricao\": \"{{dynamic_descricao}}\",\r\n    \"quantidade\": 10\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/produtos",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"produtos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/produtos/{id}",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Pre-request Script - Executa ANTES da requisição GET\r",
+									"console.log(\"Iniciando teste de busca de produto por ID\");\r",
+									"\r",
+									"// Verifica se temos um ID de produto para testar\r",
+									"if (!pm.environment.get(\"produto_id\")) {\r",
+									"    // Se não tiver um ID específico, usa um padrão\r",
+									"    console.log(\"Nenhum ID de produto definido, usando valor padrão\");\r",
+									"    pm.environment.set(\"produto_id\", \"BeeJh5lz3k6kSIzA\");\r",
+									"}\r",
+									"\r",
+									"console.log(\"Buscando produto ID:\", pm.environment.get(\"produto_id\"));\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"\r",
+									"if (pm.response.code === 200) {\r",
+									"    pm.test(\"Status 200 - Produto encontrado\", function () {\r",
+									"        pm.expect(pm.response.code).to.eql(200);\r",
+									"    });\r",
+									"    pm.test(\"Resposta contém todos os campos do produto\", function () {\r",
+									"        var jsonData = pm.response.json();\r",
+									"        pm.expect(jsonData).to.have.property(\"nome\");\r",
+									"        pm.expect(jsonData).to.have.property(\"preco\");\r",
+									"        pm.expect(jsonData).to.have.property(\"descricao\");\r",
+									"        pm.expect(jsonData).to.have.property(\"quantidade\");\r",
+									"        pm.expect(jsonData).to.have.property(\"_id\");\r",
+									"    });\r",
+									"    pm.test(\"Tipos de dados estão corretos\", function () {\r",
+									"        var jsonData = pm.response.json();\r",
+									"        \r",
+									"        pm.expect(jsonData.nome).to.be.a('string');\r",
+									"        pm.expect(jsonData.preco).to.be.a('number');\r",
+									"        pm.expect(jsonData.descricao).to.be.a('string');\r",
+									"        pm.expect(jsonData.quantidade).to.be.a('number');\r",
+									"        pm.expect(jsonData._id).to.be.a('string');\r",
+									"    });\r",
+									"    pm.test(\"Valores são válidos\", function () {\r",
+									"        var jsonData = pm.response.json();\r",
+									"        pm.expect(jsonData.nome).to.not.be.empty;\r",
+									"        pm.expect(jsonData.preco).to.be.at.least(0);\r",
+									"        pm.expect(jsonData.quantidade).to.be.at.least(0);\r",
+									"        pm.expect(jsonData._id).to.not.be.empty;\r",
+									"        const expectedId = pm.environment.get(\"produto_id\") || \"BeeJh5lz3k6kSIzA\";\r",
+									"        pm.expect(jsonData._id).to.eql(expectedId);\r",
+									"    });\r",
+									"    pm.test(\"Response time é aceitável\", function () {\r",
+									"        pm.expect(pm.response.responseTime).to.be.below(2000);\r",
+									"    });\r",
+									"}\r",
+									"if (pm.response.code === 200) {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    if (jsonData.message === \"Produto não encontrado\") {\r",
+									"        pm.test(\"Produto não encontrado\", function () {\r",
+									"            pm.expect(jsonData.message).to.eql(\"Produto não encontrado\");\r",
+									"        });\r",
+									"        \r",
+									"        pm.test(\"Resposta de não encontrado não contém dados do produto\", function () {\r",
+									"            pm.expect(jsonData).to.not.have.property(\"nome\");\r",
+									"            pm.expect(jsonData).to.not.have.property(\"preco\");\r",
+									"            pm.expect(jsonData).to.not.have.property(\"descricao\");\r",
+									"            pm.expect(jsonData).to.not.have.property(\"quantidade\");\r",
+									"        });\r",
+									"    }\r",
+									"}\r",
+									"\r",
+									"pm.test(\"Content-Type é application/json\", function () {\r",
+									"    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Resposta tem estrutura JSON válida\", function () {\r",
+									"    pm.response.to.have.jsonBody();\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/produtos/{{produto_id}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"produtos",
+								"{{produto_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/produtos/{id}",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Pre-request Script - Executa ANTES da requisição PUT\r",
+									"console.log(\"Iniciando teste de atualização de produto\");\r",
+									"\r",
+									"// Gera dados dinâmicos para evitar nome duplicado\r",
+									"const timestamp = new Date().getTime();\r",
+									"const randomName = `Produto Atualizado ${timestamp}`;\r",
+									"\r",
+									"// Define as variáveis de ambiente com dados dinâmicos\r",
+									"pm.environment.set(\"dynamic_name\", randomName);\r",
+									"pm.environment.set(\"dynamic_descricao\", `Descrição atualizada ${timestamp}`);\r",
+									"\r",
+									"\r",
+									"// Verifica se temos um token de administrador\r",
+									"if (!pm.environment.get(\"admin_token\")) {\r",
+									"    console.warn(\" Token de administrador não encontrado. O teste pode falhar com status 401 ou 403\");\r",
+									"}\r",
+									"\r",
+									"console.log(\"Tentando atualizar produto ID:\", pm.environment.get(\"produto_id\"));\r",
+									"console.log(\"Novo nome gerado:\", randomName);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Test Script - Executa DEPOIS da requisição PUT\r",
+									"console.log(\"Status code recebido:\", pm.response.code);\r",
+									"console.log(\"Resposta:\", pm.response.text());\r",
+									"\r",
+									"// Teste para status 200 - Alteração bem-sucedida\r",
+									"if (pm.response.code === 200) {\r",
+									"    pm.test(\"Status 200 - Alteração realizada com sucesso\", function () {\r",
+									"        pm.expect(pm.response.code).to.eql(200);\r",
+									"    });\r",
+									"    \r",
+									"    pm.test(\"Mensagem de alteração bem-sucedida\", function () {\r",
+									"        var jsonData = pm.response.json();\r",
+									"        pm.expect(jsonData).to.have.property(\"message\");\r",
+									"        pm.expect(jsonData.message).to.eql(\"Registro alterado com sucesso\");\r",
+									"    });\r",
+									"    \r",
+									"    pm.test(\"Response time é aceitável\", function () {\r",
+									"        pm.expect(pm.response.responseTime).to.be.below(2000);\r",
+									"    });\r",
+									"}\r",
+									"\r",
+									"// Teste para status 201 - Cadastro realizado (quando produto não existe)\r",
+									"if (pm.response.code === 201) {\r",
+									"    pm.test(\"Status 201 - Cadastro realizado com sucesso\", function () {\r",
+									"        pm.expect(pm.response.code).to.eql(201);\r",
+									"    });\r",
+									"    \r",
+									"    pm.test(\"Mensagem de cadastro bem-sucedido\", function () {\r",
+									"        var jsonData = pm.response.json();\r",
+									"        pm.expect(jsonData).to.have.property(\"message\");\r",
+									"        pm.expect(jsonData.message).to.eql(\"Cadastro realizado com sucesso\");\r",
+									"    });\r",
+									"    \r",
+									"    pm.test(\"ID do novo produto é retornado\", function () {\r",
+									"        var jsonData = pm.response.json();\r",
+									"        pm.expect(jsonData).to.have.property(\"_id\");\r",
+									"        pm.expect(jsonData._id).to.be.a('string');\r",
+									"        pm.expect(jsonData._id).to.not.be.empty;\r",
+									"        \r",
+									"        // Salva o ID para uso em outros testes\r",
+									"        pm.environment.set(\"novo_produto_id\", jsonData._id);\r",
+									"        console.log(\"ID do novo produto criado:\", jsonData._id);\r",
+									"    });\r",
+									"}\r",
+									"\r",
+									"// Teste para status 400 - Nome já existe\r",
+									"if (pm.response.code === 400) {\r",
+									"    pm.test(\"Status 400 - Nome duplicado\", function () {\r",
+									"        pm.expect(pm.response.code).to.eql(400);\r",
+									"    });\r",
+									"    \r",
+									"    pm.test(\"Mensagem de nome já existente\", function () {\r",
+									"        var jsonData = pm.response.json();\r",
+									"        pm.expect(jsonData).to.have.property(\"message\");\r",
+									"        pm.expect(jsonData.message).to.eql(\"Já existe produto com esse nome\");\r",
+									"    });\r",
+									"    \r",
+									"    pm.test(\"Resposta não contém ID em caso de erro\", function () {\r",
+									"        var jsonData = pm.response.json();\r",
+									"        pm.expect(jsonData).to.not.have.property(\"_id\");\r",
+									"    });\r",
+									"}\r",
+									"\r",
+									"// Teste para status 401 - Token inválido\r",
+									"if (pm.response.code === 401) {\r",
+									"    pm.test(\"Status 401 - Token inválido\", function () {\r",
+									"        pm.expect(pm.response.code).to.eql(401);\r",
+									"    });\r",
+									"    \r",
+									"    pm.test(\"Mensagem de token inválido\", function () {\r",
+									"        var jsonData = pm.response.json();\r",
+									"        pm.expect(jsonData).to.have.property(\"message\");\r",
+									"        pm.expect(jsonData.message).to.eql(\"Token de acesso ausente, inválido, expirado ou usuário do token não existe mais\");\r",
+									"    });\r",
+									"}\r",
+									"\r",
+									"// Teste para status 403 - Acesso não autorizado\r",
+									"if (pm.response.code === 403) {\r",
+									"    pm.test(\"Status 403 - Acesso negado\", function () {\r",
+									"        pm.expect(pm.response.code).to.eql(403);\r",
+									"    });\r",
+									"    \r",
+									"    pm.test(\"Mensagem de rota exclusiva para administradores\", function () {\r",
+									"        var jsonData = pm.response.json();\r",
+									"        pm.expect(jsonData).to.have.property(\"message\");\r",
+									"        pm.expect(jsonData.message).to.eql(\"Rota exclusiva para administradores\");\r",
+									"    });\r",
+									"}\r",
+									"\r",
+									"// Testes que se aplicam a todos os casos\r",
+									"pm.test(\"Content-Type é application/json\", function () {\r",
+									"    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Resposta tem estrutura JSON válida\", function () {\r",
+									"    pm.response.to.have.jsonBody();\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{Authorization}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nome\": \"{{dynamic_name}}\",\r\n    \"preco\": 470,\r\n    \"descricao\": \"{{dynamic_descricao}}\",\r\n    \"quantidade\": 81\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/produtos/{{id_produto}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"produtos",
+								"{{id_produto}}"
+							],
+							"query": [
+								{
+									"key": "",
+									"value": null,
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/produtos/{id}",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Test Script - Executa DEPOIS da requisição DELETE\r",
+									"console.log(\"Status code recebido:\", pm.response.code);\r",
+									"console.log(\"Resposta:\", pm.response.text());\r",
+									"\r",
+									"// Teste para status 200 - Exclusão bem-sucedida ou nenhum registro\r",
+									"if (pm.response.code === 200) {\r",
+									"    pm.test(\"Status 200 - Operação concluída\", function () {\r",
+									"        pm.expect(pm.response.code).to.eql(200);\r",
+									"    });\r",
+									"    \r",
+									"    pm.test(\"Resposta contém mensagem apropriada\", function () {\r",
+									"        var jsonData = pm.response.json();\r",
+									"        pm.expect(jsonData).to.have.property(\"message\");\r",
+									"        \r",
+									"        // Pode retornar duas mensagens diferentes no status 200\r",
+									"        const possibleMessages = [\r",
+									"            \"Registro excluído com sucesso\",\r",
+									"            \"Nenhum registro excluído\"\r",
+									"        ];\r",
+									"        \r",
+									"        pm.expect(possibleMessages).to.include(jsonData.message);\r",
+									"    });\r",
+									"    \r",
+									"    pm.test(\"Response time é aceitável\", function () {\r",
+									"        pm.expect(pm.response.responseTime).to.be.below(2000);\r",
+									"    });\r",
+									"}\r",
+									"\r",
+									"// Teste para status 400 - Produto faz parte de carrinho\r",
+									"if (pm.response.code === 400) {\r",
+									"    pm.test(\"Status 400 - Não é permitido excluir produto com carrinho\", function () {\r",
+									"        pm.expect(pm.response.code).to.eql(400);\r",
+									"    });\r",
+									"    \r",
+									"    pm.test(\"Mensagem de erro correta\", function () {\r",
+									"        var jsonData = pm.response.json();\r",
+									"        pm.expect(jsonData).to.have.property(\"message\");\r",
+									"        pm.expect(jsonData.message).to.eql(\"Não é permitido excluir produto que faz parte de carrinho\");\r",
+									"    });\r",
+									"    \r",
+									"    pm.test(\"Resposta contém IDs dos carrinhos\", function () {\r",
+									"        var jsonData = pm.response.json();\r",
+									"        pm.expect(jsonData).to.have.property(\"carrinhos\");\r",
+									"        pm.expect(jsonData.carrinhos).to.be.an('array');\r",
+									"        pm.expect(jsonData.carrinhos.length).to.be.at.least(1);\r",
+									"        \r",
+									"        // Salva os IDs dos carrinhos para possível uso em outros testes\r",
+									"        pm.environment.set(\"carrinhos_bloqueio\", JSON.stringify(jsonData.carrinhos));\r",
+									"        console.log(\"IDs dos carrinhos que impedem exclusão:\", jsonData.carrinhos);\r",
+									"    });\r",
+									"}\r",
+									"\r",
+									"// Teste para status 401 - Token inválido\r",
+									"if (pm.response.code === 401) {\r",
+									"    pm.test(\"Status 401 - Token inválido\", function () {\r",
+									"        pm.expect(pm.response.code).to.eql(401);\r",
+									"    });\r",
+									"    \r",
+									"    pm.test(\"Mensagem de token inválido\", function () {\r",
+									"        var jsonData = pm.response.json();\r",
+									"        pm.expect(jsonData).to.have.property(\"message\");\r",
+									"        pm.expect(jsonData.message).to.eql(\"Token de acesso ausente, inválido, expirado ou usuário do token não existe mais\");\r",
+									"    });\r",
+									"}\r",
+									"\r",
+									"// Teste para status 403 - Acesso não autorizado\r",
+									"if (pm.response.code === 403) {\r",
+									"    pm.test(\"Status 403 - Acesso negado\", function () {\r",
+									"        pm.expect(pm.response.code).to.eql(403);\r",
+									"    });\r",
+									"    \r",
+									"    pm.test(\"Mensagem de rota exclusiva para administradores\", function () {\r",
+									"        var jsonData = pm.response.json();\r",
+									"        pm.expect(jsonData).to.have.property(\"message\");\r",
+									"        pm.expect(jsonData.message).to.eql(\"Rota exclusiva para administradores\");\r",
+									"    });\r",
+									"}\r",
+									"\r",
+									"// Teste para status 404 - Rota não encontrada (da imagem)\r",
+									"if (pm.response.code === 404) {\r",
+									"    pm.test(\"Status 404 - Rota não encontrada\", function () {\r",
+									"        pm.expect(pm.response.code).to.eql(404);\r",
+									"    });\r",
+									"}\r",
+									"\r",
+									"// Testes que se aplicam a todos os casos\r",
+									"pm.test(\"Content-Type é application/json\", function () {\r",
+									"    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Resposta tem estrutura JSON válida\", function () {\r",
+									"    pm.response.to.have.jsonBody();\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Response time is less than 500ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Pre-request Script - Executa ANTES da requisição DELETE\r",
+									"console.log(\"Iniciando teste de exclusão de produto\");\r",
+									"\r",
+									"// Verifica se temos um ID de produto para testar\r",
+									"if (!pm.environment.get(\"produto_id_to_delete\")) {\r",
+									"    // Se não tiver um ID específico, usa um padrão\r",
+									"    console.log(\"Nenhum ID de produto definido, usando valor padrão\");\r",
+									"    pm.environment.set(\"produto_id_to_delete\", \"R97YZoxeRZYX8UEm\");\r",
+									"}\r",
+									"\r",
+									"// Verifica se temos um token de administrador\r",
+									"if (!pm.environment.get(\"admin_token\")) {\r",
+									"    console.warn(\"⚠️  Token de administrador não encontrado. O teste pode falhar com status 401 ou 403\");\r",
+									"}\r",
+									"\r",
+									"console.log(\"Tentando excluir produto ID:\", pm.environment.get(\"produto_id_to_delete\"));"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{Authorization}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{url}}/produtos/{{id_produto}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"produtos",
+								"{{id_produto}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Carrinho",
+			"item": [
+				{
+					"name": "/carrinhos",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Pre-request Script - Executa ANTES da requisição GET\r",
+									"console.log(\"Iniciando teste de listagem de carrinhos\");\r",
+									"\r",
+									"// Limpa parâmetros de query anteriores\r",
+									"pm.environment.set(\"query_params\", \"\");\r",
+									"\r",
+									"// Opcional: define alguns parâmetros de query para teste\r",
+									"const params = {\r",
+									"    _id: \"carrinho123\",\r",
+									"    precoTotal: 10000,\r",
+									"    quantidadeTotal: 5,\r",
+									"    idUsuario: \"usuario456\"\r",
+									"};\r",
+									"\r",
+									"// Constrói a string de query\r",
+									"const queryString = Object.entries(params)\r",
+									"    .filter(([key, value]) => value !== undefined && value !== \"\")\r",
+									"    .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)\r",
+									"    .join('&');\r",
+									"\r",
+									"pm.environment.set(\"query_params\", queryString);\r",
+									"console.log(\"Parâmetros de query:\", queryString);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"\r",
+									"pm.test(\"Status 200 - Lista de carrinhos retornada\", function () {\r",
+									"    pm.expect(pm.response.code).to.eql(200);\r",
+									"});\r",
+									"pm.test(\"Content-Type é application/json\", function () {\r",
+									"    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');\r",
+									"});\r",
+									"pm.test(\"Estrutura JSON válida\", function () {\r",
+									"    pm.response.to.have.jsonBody();\r",
+									"});\r",
+									"pm.test(\"Resposta contém estrutura correta\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData).to.have.property(\"quantidade\");\r",
+									"    pm.expect(jsonData.quantidade).to.be.a('number');\r",
+									"    pm.expect(jsonData.quantidade).to.be.at.least(0);\r",
+									"    pm.expect(jsonData).to.have.property(\"carrinhos\");\r",
+									"    pm.expect(jsonData.carrinhos).to.be.an('array');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Quantidade corresponde ao número de carrinhos\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.quantidade).to.eql(jsonData.carrinhos.length);\r",
+									"});\r",
+									"if (pm.response.json().quantidade > 0) {\r",
+									"    pm.test(\"Cada carrinho tem estrutura correta\", function () {\r",
+									"        var jsonData = pm.response.json();\r",
+									"        jsonData.carrinhos.forEach((carrinho, index) => {\r",
+									"            pm.expect(carrinho).to.have.property(\"produtos\");\r",
+									"            pm.expect(carrinho).to.have.property(\"precoTotal\");\r",
+									"            pm.expect(carrinho).to.have.property(\"quantidadeTotal\");\r",
+									"            pm.expect(carrinho).to.have.property(\"idUsuario\");\r",
+									"            pm.expect(carrinho).to.have.property(\"_id\");\r",
+									"            pm.expect(carrinho.produtos).to.be.an('array');\r",
+									"            pm.expect(carrinho.precoTotal).to.be.a('number');\r",
+									"            pm.expect(carrinho.quantidadeTotal).to.be.a('number');\r",
+									"            pm.expect(carrinho.idUsuario).to.be.a('string');\r",
+									"            pm.expect(carrinho._id).to.be.a('string');\r",
+									"            pm.expect(carrinho.precoTotal).to.be.at.least(0);\r",
+									"            pm.expect(carrinho.quantidadeTotal).to.be.at.least(0);\r",
+									"            pm.expect(carrinho.idUsuario).to.not.be.empty;\r",
+									"            pm.expect(carrinho._id).to.not.be.empty;\r",
+									"        });\r",
+									"    });\r",
+									"    pm.test(\"Produtos dentro do carrinho têm estrutura correta\", function () {\r",
+									"        var jsonData = pm.response.json();\r",
+									"        \r",
+									"        jsonData.carrinhos.forEach((carrinho, carrinhoIndex) => {\r",
+									"            if (carrinho.produtos.length > 0) {\r",
+									"                carrinho.produtos.forEach((produto, produtoIndex) => {\r",
+									"                    pm.expect(produto).to.have.property(\"idProduto\");\r",
+									"                    pm.expect(produto).to.have.property(\"quantidade\");\r",
+									"                    pm.expect(produto).to.have.property(\"precoUnitario\");\r",
+									"                    pm.expect(produto.idProduto).to.be.a('string');\r",
+									"                    pm.expect(produto.quantidade).to.be.a('number');\r",
+									"                    pm.expect(produto.precoUnitario).to.be.a('number');\r",
+									"                    pm.expect(produto.idProduto).to.not.be.empty;\r",
+									"                    pm.expect(produto.quantidade).to.be.at.least(1);\r",
+									"                    pm.expect(produto.precoUnitario).to.be.at.least(0);\r",
+									"                });\r",
+									"            }\r",
+									"        });\r",
+									"    });\r",
+									"}\r",
+									"\r",
+									"pm.test(\"Response time é aceitável\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(3000);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/carrinhos",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"carrinhos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/carrinhos",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Pre-request Script - Executa ANTES da requisição POST\r",
+									"console.log(\"Iniciando teste de cadastro de carrinho\");\r",
+									"\r",
+									"// Gera IDs de produtos dinâmicos para teste\r",
+									"const timestamp = new Date().getTime();\r",
+									"const produtoId1 = `produto_${timestamp}_1`;\r",
+									"const produtoId2 = `produto_${timestamp}_2`;\r",
+									"\r",
+									"// Define as variáveis de ambiente com dados dinâmicos\r",
+									"pm.environment.set(\"produto_id_1\", produtoId1);\r",
+									"pm.environment.set(\"produto_id_2\", produtoId2);\r",
+									"\r",
+									"// Verifica se temos um token de usuário\r",
+									"if (!pm.environment.get(\"user_token\")) {\r",
+									"    console.warn(\"⚠️  Token de usuário não encontrado. O teste pode falhar com status 401\");\r",
+									"}\r",
+									"\r",
+									"console.log(\"IDs de produtos gerados:\", produtoId1, produtoId2);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Test Script - Executa DEPOIS da requisição POST\r",
+									"console.log(\"Status code recebido:\", pm.response.code);\r",
+									"console.log(\"Resposta:\", pm.response.text());\r",
+									"\r",
+									"// Teste para status 201 - Cadastro bem-sucedido\r",
+									"if (pm.response.code === 201) {\r",
+									"    pm.test(\"Status 201 - Cadastro realizado com sucesso\", function () {\r",
+									"        pm.expect(pm.response.code).to.eql(201);\r",
+									"    });\r",
+									"    \r",
+									"    pm.test(\"Mensagem de cadastro bem-sucedido\", function () {\r",
+									"        var jsonData = pm.response.json();\r",
+									"        pm.expect(jsonData).to.have.property(\"message\");\r",
+									"        pm.expect(jsonData.message).to.eql(\"Cadastro realizado com sucesso\");\r",
+									"    });\r",
+									"    \r",
+									"    pm.test(\"ID do carrinho é retornado\", function () {\r",
+									"        var jsonData = pm.response.json();\r",
+									"        pm.expect(jsonData).to.have.property(\"_id\");\r",
+									"        pm.expect(jsonData._id).to.be.a('string');\r",
+									"        pm.expect(jsonData._id).to.not.be.empty;\r",
+									"        \r",
+									"        // Salva o ID para uso em outros testes\r",
+									"        pm.environment.set(\"carrinho_id\", jsonData._id);\r",
+									"        console.log(\"ID do carrinho criado:\", jsonData._id);\r",
+									"    });\r",
+									"    \r",
+									"    pm.test(\"Response time é aceitável\", function () {\r",
+									"        pm.expect(pm.response.responseTime).to.be.below(2000);\r",
+									"    });\r",
+									"}\r",
+									"\r",
+									"// Teste para status 400 - Erros diversos\r",
+									"if (pm.response.code === 400) {\r",
+									"    pm.test(\"Status 400 - Algo deu errado\", function () {\r",
+									"        pm.expect(pm.response.code).to.eql(400);\r",
+									"    });\r",
+									"    \r",
+									"    pm.test(\"Mensagem de erro específica\", function () {\r",
+									"        var jsonData = pm.response.json();\r",
+									"        pm.expect(jsonData).to.have.property(\"message\");\r",
+									"        \r",
+									"        // Lista de mensagens de erro possíveis\r",
+									"        const possibleMessages = [\r",
+									"            \"Não é permitido possuir produto duplicado\",\r",
+									"            \"Não é permitido ter mais de 1 carrinho\",\r",
+									"            \"Produto não encontrado\",\r",
+									"            \"Produto não possui quantidade suficiente\"\r",
+									"        ];\r",
+									"        \r",
+									"        // Verifica se a mensagem está entre as possíveis\r",
+									"        const messageFound = possibleMessages.some(msg => jsonData.message.includes(msg));\r",
+									"        pm.expect(messageFound).to.be.true;\r",
+									"        \r",
+									"        console.log(\"Mensagem de erro:\", jsonData.message);\r",
+									"    });\r",
+									"    \r",
+									"    pm.test(\"Resposta não contém ID em caso de erro\", function () {\r",
+									"        var jsonData = pm.response.json();\r",
+									"        pm.expect(jsonData).to.not.have.property(\"_id\");\r",
+									"    });\r",
+									"}\r",
+									"\r",
+									"// Teste para status 401 - Token inválido\r",
+									"if (pm.response.code === 401) {\r",
+									"    pm.test(\"Status 401 - Token inválido\", function () {\r",
+									"        pm.expect(pm.response.code).to.eql(401);\r",
+									"    });\r",
+									"    \r",
+									"    pm.test(\"Mensagem de token inválido\", function () {\r",
+									"        var jsonData = pm.response.json();\r",
+									"        pm.expect(jsonData).to.have.property(\"message\");\r",
+									"        pm.expect(jsonData.message).to.eql(\"Token de acesso ausente, inválido, expirado ou usuário do token não existe mais\");\r",
+									"    });\r",
+									"}\r",
+									"\r",
+									"// Testes que se aplicam a todos os casos\r",
+									"pm.test(\"Content-Type é application/json\", function () {\r",
+									"    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Resposta tem estrutura JSON válida\", function () {\r",
+									"    pm.response.to.have.jsonBody();\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{Authorization}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"produtos\": [\r\n    {\r\n      \"idProduto\": \"{{produto_id_1}}\",\r\n      \"quantidade\": 1\r\n    },\r\n    {\r\n      \"idProduto\": \"{{produto_id_2}}\",\r\n      \"quantidade\": 3\r\n    }\r\n  ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}/carrinhos",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"carrinhos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/carrinhos/{id}",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Pre-request Script - Executa ANTES da requisição GET\r",
+									"console.log(\"Iniciando teste de busca de carrinho por ID\");\r",
+									"\r",
+									"// Verifica se temos um ID de carrinho para testar\r",
+									"if (!pm.environment.get(\"carrinho_id\")) {\r",
+									"    // Se não tiver um ID específico, usa um padrão\r",
+									"    console.log(\"Nenhum ID de carrinho definido, usando valor padrão\");\r",
+									"    pm.environment.set(\"carrinho_id\", \"W6H6vGnDjUh6jkE1\");\r",
+									"}\r",
+									"\r",
+									"console.log(\"Buscando carrinho ID:\", pm.environment.get(\"carrinho_id\"));"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"\r",
+									"if (pm.response.code === 200) {\r",
+									"    const response = pm.response.json();\r",
+									"    if (response.message === \"Carrinho não encontrado\") {\r",
+									"        pm.test(\"Carrinho não encontrado\", function () {\r",
+									"            pm.expect(response.message).to.eql(\"Carrinho não encontrado\");\r",
+									"        });\r",
+									"        pm.test(\"Resposta de não encontrado não contém dados do carrinho\", function () {\r",
+									"            pm.expect(response).to.not.have.property(\"produtos\");\r",
+									"            pm.expect(response).to.not.have.property(\"precoTotal\");\r",
+									"            pm.expect(response).to.not.have.property(\"quantidadeTotal\");\r",
+									"            pm.expect(response).to.not.have.property(\"idUsuario\");\r",
+									"            pm.expect(response).to.not.have.property(\"_id\");\r",
+									"        });\r",
+									"    } else {\r",
+									"        pm.test(\"Status 200 - Carrinho encontrado\", function () {\r",
+									"            pm.expect(pm.response.code).to.eql(200);\r",
+									"        });\r",
+									"        pm.test(\"Resposta contém todos os campos do carrinho\", function () {\r",
+									"            pm.expect(response).to.have.property(\"produtos\");\r",
+									"            pm.expect(response).to.have.property(\"precoTotal\");\r",
+									"            pm.expect(response).to.have.property(\"quantidadeTotal\");\r",
+									"            pm.expect(response).to.have.property(\"idUsuario\");\r",
+									"            pm.expect(response).to.have.property(\"_id\");\r",
+									"        });\r",
+									"        pm.test(\"Tipos de dados estão corretos\", function () {\r",
+									"            pm.expect(response.produtos).to.be.an('array');\r",
+									"            pm.expect(response.precoTotal).to.be.a('number');\r",
+									"            pm.expect(response.quantidadeTotal).to.be.a('number');\r",
+									"            pm.expect(response.idUsuario).to.be.a('string');\r",
+									"            pm.expect(response._id).to.be.a('string');\r",
+									"        });\r",
+									"        pm.test(\"Valores são válidos\", function () {\r",
+									"            pm.expect(response.idUsuario).to.not.be.empty;\r",
+									"            pm.expect(response._id).to.not.be.empty;\r",
+									"            const expectedId = pm.environment.get(\"carrinho_id\") || \"W6H6vGnDjUh6jkE1\";\r",
+									"            pm.expect(response._id).to.eql(expectedId);\r",
+									"        });\r",
+									"        if (response.produtos.length > 0) {\r",
+									"            pm.test(\"Produtos dentro do carrinho têm estrutura correta\", function () {\r",
+									"                response.produtos.forEach((produto, index) => {\r",
+									"                    pm.expect(produto).to.have.property(\"idProduto\");\r",
+									"                    pm.expect(produto).to.have.property(\"quantidade\");\r",
+									"                    pm.expect(produto).to.have.property(\"precoUnitario\");\r",
+									"                    \r",
+									"                    pm.expect(produto.idProduto).to.be.a('string');\r",
+									"                    pm.expect(produto.quantidade).to.be.a('number');\r",
+									"                    pm.expect(produto.precoUnitario).to.be.a('number');\r",
+									"                    \r",
+									"                    pm.expect(produto.idProduto).to.not.be.empty;\r",
+									"                    pm.expect(produto.quantidade).to.be.at.least(1);\r",
+									"                    pm.expect(produto.precoUnitario).to.be.at.least(0);\r",
+									"                });\r",
+									"            });\r",
+									"        }\r",
+									"        pm.test(\"Response time é aceitável\", function () {\r",
+									"            pm.expect(pm.response.responseTime).to.be.below(2000);\r",
+									"        });\r",
+									"    }\r",
+									"}\r",
+									"\r",
+									"// Testes que se aplicam a todos os casos\r",
+									"pm.test(\"Content-Type é application/json\", function () {\r",
+									"    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Resposta tem estrutura JSON válida\", function () {\r",
+									"    pm.response.to.have.jsonBody();\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}/carrinhos/{{carrinho_id}}",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"carrinhos",
+								"{{carrinho_id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/carrinhos/concuir-compra",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Pre-request Script - Executa ANTES da requisição DELETE\r",
+									"console.log(\"Iniciando teste de conclusão de compra/exclusão de carrinho\");\r",
+									"\r",
+									"// Verifica se temos um token de usuário\r",
+									"if (!pm.environment.get(\"user_token\")) {\r",
+									"    console.warn(\"⚠️  Token de usuário não encontrado. O teste pode falhar com status 401\");\r",
+									"} else {\r",
+									"    console.log(\"Token de usuário disponível\");\r",
+									"}"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Test Script - Executa DEPOIS da requisição DELETE\r",
+									"console.log(\"Status code recebido:\", pm.response.code);\r",
+									"console.log(\"Resposta:\", pm.response.text());\r",
+									"\r",
+									"// Teste para status 200 - Exclusão bem-sucedida ou carrinho não encontrado\r",
+									"if (pm.response.code === 200) {\r",
+									"    pm.test(\"Status 200 - Operação concluída\", function () {\r",
+									"        pm.expect(pm.response.code).to.eql(200);\r",
+									"    });\r",
+									"    \r",
+									"    pm.test(\"Resposta contém mensagem apropriada\", function () {\r",
+									"        var jsonData = pm.response.json();\r",
+									"        pm.expect(jsonData).to.have.property(\"message\");\r",
+									"        \r",
+									"        // Pode retornar duas mensagens diferentes no status 200\r",
+									"        const possibleMessages = [\r",
+									"            \"Registro excluído com sucesso\",\r",
+									"            \"Não foi encontrado carrinho para esse usuário\"\r",
+									"        ];\r",
+									"        \r",
+									"        pm.expect(possibleMessages).to.include(jsonData.message);\r",
+									"    });\r",
+									"    \r",
+									"    pm.test(\"Response time é aceitável\", function () {\r",
+									"        pm.expect(pm.response.responseTime).to.be.below(2000);\r",
+									"    });\r",
+									"    \r",
+									"    // Log adicional baseado na mensagem\r",
+									"    var jsonData = pm.response.json();\r",
+									"    if (jsonData.message === \"Registro excluído com sucesso\") {\r",
+									"        console.log(\"✅ Carrinho excluído com sucesso\");\r",
+									"    } else {\r",
+									"        console.log(\"ℹ️  Nenhum carrinho encontrado para o usuário\");\r",
+									"    }\r",
+									"}\r",
+									"\r",
+									"// Teste para status 401 - Token inválido\r",
+									"if (pm.response.code === 401) {\r",
+									"    pm.test(\"Status 401 - Token inválido\", function () {\r",
+									"        pm.expect(pm.response.code).to.eql(401);\r",
+									"    });\r",
+									"    \r",
+									"    pm.test(\"Mensagem de token inválido\", function () {\r",
+									"        var jsonData = pm.response.json();\r",
+									"        pm.expect(jsonData).to.have.property(\"message\");\r",
+									"        pm.expect(jsonData.message).to.eql(\"Token de acesso ausente, inválido, expirado ou usuário do token não existe mais\");\r",
+									"    });\r",
+									"}\r",
+									"\r",
+									"// Testes que se aplicam a todos os casos\r",
+									"pm.test(\"Content-Type é application/json\", function () {\r",
+									"    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Resposta tem estrutura JSON válida\", function () {\r",
+									"    pm.response.to.have.jsonBody();\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{Authorization}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/carrinhos/concluir-compra",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"carrinhos",
+								"concluir-compra"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/carrinhos/cancelar-compra",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"// Verificar se a resposta tem status 200 para sucesso\r",
+									"if (pm.response.code === 200) {\r",
+									"    pm.test(\"Status code is 200\", function () {\r",
+									"        pm.response.to.have.status(200);\r",
+									"    });\r",
+									"    \r",
+									"    // Verificar se a resposta é JSON\r",
+									"    pm.test(\"Response is JSON\", function () {\r",
+									"        pm.response.to.have.header(\"Content-Type\", \"application/json\");\r",
+									"    });\r",
+									"    \r",
+									"    // Verificar a mensagem de sucesso\r",
+									"    pm.test(\"Success message in response\", function () {\r",
+									"        const responseData = pm.response.json();\r",
+									"        pm.expect(responseData).to.have.property(\"message\");\r",
+									"        pm.expect(responseData.message).to.be.oneOf([\r",
+									"            \"Registro excluído com sucesso\",\r",
+									"            \"Não foi encontrado carrinho para esse usuário\"\r",
+									"        ]);\r",
+									"    });\r",
+									"}\r",
+									"\r",
+									"// Verificar se há erro de autenticação (401)\r",
+									"if (pm.response.code === 401) {\r",
+									"    pm.test(\"Status code is 401\", function () {\r",
+									"        pm.response.to.have.status(401);\r",
+									"    });\r",
+									"    \r",
+									"    pm.test(\"Token error message\", function () {\r",
+									"        const responseData = pm.response.json();\r",
+									"        pm.expect(responseData).to.have.property(\"message\");\r",
+									"        pm.expect(responseData.message).to.include(\"Token de acesso ausente\");\r",
+									"    });\r",
+									"}\r",
+									"\r",
+									"// Verificar tempo de resposta\r",
+									"pm.test(\"Response time is acceptable\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(1000); // Menos de 1 segundo\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "{{Authorization}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{url}}/carrinhos/cancelar-compra",
+							"host": [
+								"{{url}}"
+							],
+							"path": [
+								"carrinhos",
+								"cancelar-compra"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "url",
+			"value": "https://compassuol.serverest.dev"
+		},
+		{
+			"key": "user_id_to_update",
+			"value": "OBIVpg3oLCJjOwU1"
+		},
+		{
+			"key": "user_id_to_delete",
+			"value": "OBIVpg3oLCJjOwU1"
+		},
+		{
+			"key": "Authorization",
+			"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImZ1bGFub0BxYS5jb20iLCJwYXNzd29yZCI6InRlc3RlIiwiaWF0IjoxNzU3MDkyMTE1LCJleHAiOjE3NTcwOTI3MTV9.7AppjltHkxvgpe5yJNkGjh1D8yWE3hiWlWJ8s8UNO6M"
+		},
+		{
+			"key": "id_produto",
+			"value": "MmLwQJsu77j2G80V"
+		},
+		{
+			"key": "user_id",
+			"value": "OBIVpg3oLCJjOwU1"
+		}
+	]
+}
